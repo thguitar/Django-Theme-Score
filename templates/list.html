@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block page_title %}List Themes{% endblock %}
+
+{% block nav_title %}List Themes{% endblock %}
+
+{% block content %}
+  <table>
+    <thead>
+      <tr>
+          <th>Theme</th>
+          <th>Score</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for theme in themes %}
+      <tr>
+        <td>{{ theme.name }}</td>
+        <td>{{ theme.score }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

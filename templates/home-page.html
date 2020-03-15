@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block page_title %}Home Page{% endblock %}
+
+{% block nav_title %}Home Page{% endblock %}
+{% block content %}
+    <style>
+        span.title {
+            font-weight: bold;
+        }
+    </style>
+    <div>
+      <ul class="collection">
+        {% for video in videos %}
+        <li class="collection-item avatar">
+          <i class="material-icons circle red">play_arrow</i>
+          <span class="title">{{ video.name }}</span>
+          <p>Theme: {{ video.theme }}<br>
+             ThumbUp: <span class="thumbs_up_count">{{ video.thumbs_up }}</span><br>
+             ThumbDown: <span class="thumbs_down_count">{{ video.thumbs_down }}</span>
+          </p>
+          <div class="secondary-content">
+              <button type="button" id="btn_thumb_up" class="waves-effect waves-light btn blue"
+                      data-url="{% url 'video_set_thumb_up' id=video.id %}">
+                  <i class="material-icons">thumb_up</i>
+              </button>
+              <button type="button" id="btn_thumb_down" class="waves-effect waves-light btn red"
+                      data-url="{% url 'video_set_thumb_down' id=video.id %}">
+                  <i class="material-icons">thumb_down</i>
+              </button>
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+    <div class="fixed-action-btn">
+      <a class="btn-floating btn-large red modal-trigger" href="#modal1">
+        <i class="large material-icons">add</i>
+      </a>
+    </div>
+
+    {% include 'create.html' %}
+{% endblock %}
+{% block extra_js %}
+    <script>
+        $(document).ready(function(){
+          $('.modal').modal();
+
+          $('button#btn_thumb_up').on('click', function () {
+            set_thumb_up_down_ajax($(this).attr('data-url'), $(this).parent().prev('p'));
+          });
+          $('button#btn_thumb_down').on('click', function () {
+            set_thumb_up_down_ajax($(this).attr('data-url'), $(this).parent().prev('p'));
+          });
+        });
+        
+        function set_thumb_up_down_ajax(url, element) {
+            $.ajax({
+              url: url,
+              success: function (data){
+                  M.toast({html: data['message']});
+                  if (data['ThumbUp'])
+                      element.find('span.thumbs_up_count').text(data['ThumbUp']);
+                  else if (data['ThumbDown'])
+                      element.find('span.thumbs_down_count').text(data['ThumbDown']);
+              }
+            });
+        }
+    </script>
+{% endblock %}
